@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "827404526719",
+    "project_id": "fruitvis",
+    "storage_bucket": "fruitvis.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:827404526719:android:92d0d4740f328b2b370b4a",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADjSigP0IsvLXu85zyqr02eRLcFbyUOCs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
