@@ -39,12 +39,13 @@ class _HomePageState extends State<HomePage> {
   final picker = ImagePicker();
   bool _showResultButton = false;
 
-  Future getImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+ Future getImage(ImageSource source) async {
+    final pickedFile = await picker.pickImage(source: source);
 
     setState(() {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
+        _resultImage = null; // Reset result image if a new image is uploaded
       } else {
         print('No image selected.');
       }
@@ -83,54 +84,85 @@ class _HomePageState extends State<HomePage> {
       home: SafeArea(
         child: Scaffold(
           appBar: AppBar(
-            title: Text(
+            title: const Text(
               'Lifecycle Stage Prediction',
               style: TextStyle(
-                color: Colors.grey[700],
+                color: Colors.white,
                 fontSize: 16,
               ),
             ),
             actions: [
-              IconButton(onPressed: signUserOut, icon: Icon(Icons.logout))
+              IconButton(onPressed: signUserOut, icon: const Icon(Icons.logout), color: Colors.white,)
             ],
-            backgroundColor: Colors.orange[200],
+            backgroundColor: Colors.orange[400],
           ),
-          body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              _image == null
-                  ? Text('No image selected.')
-                  : Container(
-                      width: 350,
-                      height: 400,
-                      child: Image.file(_image! , fit: BoxFit.cover,),
+          body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(height: 20),
+            _image == null
+                ? const Text('No image selected.', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300),)
+                : Container(
+                    width: 350,
+                    height: 400,
+                    child: Image.file(
+                      _image!,
+                      fit: BoxFit.cover,
                     ),
-              SizedBox(height: 20),
+                  ),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () {
+                    getImage(ImageSource.gallery);
+                  },
+                  icon: const Icon(Icons.photo_library, color: Colors.orange),
+                  label: const Text('Select from Gallery', style: TextStyle(fontSize: 12, color: Colors.orange),),
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(150, 50),
+                    // textStyle: const TextStyle(fontSize: 12, color: Colors.orange),
+                  ),
+                ),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    getImage(ImageSource.camera);
+                  },
+                  icon: const Icon(Icons.camera_alt,  color: Colors.orange),
+                  label: const Text('Take a Picture', style: TextStyle(fontSize: 12, color: Colors.orange),),
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(150, 50),
+                    // textStyle: const TextStyle(fontSize: 12, color: Colors.orange),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 40),
+            if (_image != null)
               ElevatedButton(
-                onPressed: _image == null
-                    ? null
-                    : () {
-                        sendImageToAPI(_image!);
-                      },
-                child: Text('Process Image'),
+                onPressed: () {
+                  sendImageToAPI(_image!);
+                },
+                child: const Text('Process Image', style: TextStyle(fontSize: 16, color: Colors.white),),
+                style: ElevatedButton.styleFrom(
+                  // textStyle: const TextStyle(fontSize: 16, color: Colors.orange),
+                  backgroundColor: Colors.orange,
+                ),
               ),
-              SizedBox(height: 20),
-              _resultImage == null
-                  ? Container()
-                  : Container(
-                      width: 200,
-                      height: 200,
-                      child: Image.file(_resultImage!),
+            const SizedBox(height: 20),
+            _resultImage == null
+                ? Container()
+                : Container(
+                    width: 350,
+                    height: 400,
+                    child: Image.file(
+                      _resultImage!,
+                      fit: BoxFit.cover,
                     ),
-            ],
-          ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: getImage,
-          tooltip: 'Pick Image',
-          child: Icon(Icons.photo_library),
+                  ),
+          ],
         ),
       ),
     ),
