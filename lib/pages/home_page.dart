@@ -139,7 +139,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 30),
             if (_image != null)
               ElevatedButton(
                 onPressed: () {
@@ -149,6 +149,8 @@ class _HomePageState extends State<HomePage> {
                 style: ElevatedButton.styleFrom(
                   // textStyle: const TextStyle(fontSize: 16, color: Colors.orange),
                   backgroundColor: Colors.orange,
+                  padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 30.0),
+                  
                 ),
               ),
             const SizedBox(height: 20),
