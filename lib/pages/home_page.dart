@@ -38,9 +38,20 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   File? _image;
-  Uint8List? _resultImage;
+  // Uint8List? _resultImage;
+  //remove
+  File? _resultImage;
   final picker = ImagePicker();
   bool _showResultButton = false;
+
+
+
+  var stage1Count = 10;
+  var stage2Count = 2;
+  var stage3Count = 114;
+  var stage4Count = 61;
+  var totalCount = 142;
+
 
   Future getImage(ImageSource source) async {
     final pickedFile = await picker.pickImage(source: source);
@@ -67,14 +78,14 @@ class _HomePageState extends State<HomePage> {
         var responseData = await response.stream.toBytes();
         var decodedResponse = json.decode(utf8.decode(responseData));
         var imageBytes = base64Decode(decodedResponse['image']);
-        var stage1Count = decodedResponse['stage 1'];
-        var stage2Count = decodedResponse['stage 2'];
-        var stage3Count = decodedResponse['stage 3'];
-        var stage4Count = decodedResponse['stage 4'];
-        var totalCount = decodedResponse['total'];
+        stage1Count = decodedResponse['stage 1'];
+        stage2Count = decodedResponse['stage 2'];
+        stage3Count = decodedResponse['stage 3'];
+        stage4Count = decodedResponse['stage 4'];
+        totalCount = decodedResponse['total'];
         print(stage2Count);
         setState(() {
-          _resultImage = imageBytes;
+          // _resultImage = imageBytes;
         });
       } else {
         print('Failed to upload image. Error code: ${response.statusCode}');
@@ -82,6 +93,13 @@ class _HomePageState extends State<HomePage> {
     } catch (e) {
       print('Error: $e');
     }
+
+
+  // remove line
+  setState((){
+    _resultImage = _image;
+  });
+
   }
 
   void signUserOut() {
@@ -187,17 +205,197 @@ class _HomePageState extends State<HomePage> {
                   _resultImage == null
                       ? Container()
                       : Container(
-                          width: 350,
-                          height: 400,
-                          child: Image.memory(
-                            _resultImage!,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                ],
-              ),
-            )),
+                  width: 350,
+                  height: 400,
+                  // child: Image.memory(
+                  child: Image.file(
+                    _resultImage!,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              // Display summary table after result image
+              // if (_resultImage != null)
+                Column(
+  children: [
+    const SizedBox(height: 20),
+    Container(
+      width: 350,
+      padding: const EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        color: Colors.orange[200],
+        borderRadius: BorderRadius.circular(10.0),
       ),
-    );
-  }
+      child: const Text(
+        'Summary',
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+    ),
+    const SizedBox(height: 10),
+    Container(
+      width: 350,
+      child: Table(
+        border: TableBorder.all(),
+        children: [
+          TableRow(
+            decoration: BoxDecoration(
+              color: Colors.orange[100],
+            ),
+            children: [
+              const TableCell(
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    'Stage 1 Count',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              TableCell(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    stage1Count.toString(),
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          TableRow(
+            decoration: BoxDecoration(
+              color: Colors.orange[100],
+            ),
+            children: [
+              const TableCell(
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    'Stage 2 Count',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              TableCell(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    stage2Count.toString(),
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          TableRow(
+            decoration: BoxDecoration(
+              color: Colors.orange[100],
+            ),
+            children: [
+              const TableCell(
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    'Stage 3 Count',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              TableCell(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    stage3Count.toString(),
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          TableRow(
+            decoration: BoxDecoration(
+              color: Colors.orange[100],
+            ),
+            children: [
+              const TableCell(
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    'Stage 4 Count',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              TableCell(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    stage4Count.toString(),
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          TableRow(
+            decoration: BoxDecoration(
+              color: Colors.orange[100],
+            ),
+            children: [
+              const TableCell(
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    'Total Count',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              TableCell(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    totalCount.toString(),
+                    style: TextStyle(
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  ],
+),
+
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+}
 }
