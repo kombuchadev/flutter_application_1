@@ -44,14 +44,11 @@ class _HomePageState extends State<HomePage> {
   final picker = ImagePicker();
   bool _showResultButton = false;
 
-
-
   var stage1Count = 10;
   var stage2Count = 2;
   var stage3Count = 114;
   var stage4Count = 61;
   var totalCount = 142;
-
 
   Future getImage(ImageSource source) async {
     final pickedFile = await picker.pickImage(source: source);
@@ -94,12 +91,10 @@ class _HomePageState extends State<HomePage> {
       print('Error: $e');
     }
 
-
-  // remove line
-  setState((){
-    _resultImage = _image;
-  });
-
+    // remove line
+    setState(() {
+      _resultImage = _image;
+    });
   }
 
   void signUserOut() {
@@ -111,291 +106,289 @@ class _HomePageState extends State<HomePage> {
     return MaterialApp(
       home: SafeArea(
         child: Scaffold(
-            appBar: AppBar(
-              title: const Text(
-                'Lifecycle Stage Prediction',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
+          appBar: AppBar(
+            title: const Text(
+              'Lifecycle Stage Prediction',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
               ),
-              actions: [
-                IconButton(
-                  onPressed: signUserOut,
-                  icon: const Icon(Icons.logout),
-                  color: Colors.white,
-                )
-              ],
-              backgroundColor: Colors.orange[400],
             ),
-            body: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 20),
-                  _image == null
-                      ? const Text(
-                          'No image selected.',
-                          style: TextStyle(
-                              color: Colors.grey, fontWeight: FontWeight.w300),
-                        )
-                      : Container(
-                          width: 350,
-                          height: 400,
-                          child: Image.file(
-                            _image!,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          getImage(ImageSource.gallery);
-                        },
-                        icon: const Icon(Icons.photo_library,
-                            color: Colors.orange),
-                        label: const Text(
-                          'Select from Gallery',
-                          style: TextStyle(fontSize: 12, color: Colors.orange),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(150, 50),
-                          // textStyle: const TextStyle(fontSize: 12, color: Colors.orange),
+            actions: [
+              IconButton(
+                onPressed: signUserOut,
+                icon: const Icon(Icons.logout),
+                color: Colors.white,
+              )
+            ],
+            backgroundColor: Colors.orange[400],
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 20),
+                _image == null
+                    ? const Text(
+                        'No image selected.',
+                        style: TextStyle(
+                            color: Colors.grey, fontWeight: FontWeight.w300),
+                      )
+                    : Container(
+                        width: 350,
+                        height: 400,
+                        child: Image.file(
+                          _image!,
+                          fit: BoxFit.cover,
                         ),
                       ),
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          getImage(ImageSource.camera);
-                        },
-                        icon:
-                            const Icon(Icons.camera_alt, color: Colors.orange),
-                        label: const Text(
-                          'Take a Picture',
-                          style: TextStyle(fontSize: 12, color: Colors.orange),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(150, 50),
-                          // textStyle: const TextStyle(fontSize: 12, color: Colors.orange),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 30),
-                  if (_image != null)
-                    ElevatedButton(
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton.icon(
                       onPressed: () {
-                        sendImageToAPI(_image!);
+                        getImage(ImageSource.gallery);
                       },
-                      child: const Text(
-                        'Process Image',
-                        style: TextStyle(fontSize: 16, color: Colors.white),
+                      icon:
+                          const Icon(Icons.photo_library, color: Colors.orange),
+                      label: const Text(
+                        'Select from Gallery',
+                        style: TextStyle(fontSize: 12, color: Colors.orange),
                       ),
                       style: ElevatedButton.styleFrom(
-                        // textStyle: const TextStyle(fontSize: 16, color: Colors.orange),
-                        backgroundColor: Colors.orange,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 15.0, horizontal: 30.0),
+                        minimumSize: const Size(150, 50),
+                        // textStyle: const TextStyle(fontSize: 12, color: Colors.orange),
                       ),
                     ),
-                  const SizedBox(height: 20),
-                  _resultImage == null
-                      ? Container()
-                      : Container(
-                  width: 350,
-                  height: 400,
-                  // child: Image.memory(
-                  child: Image.file(
-                    _resultImage!,
-                    fit: BoxFit.cover,
-                  ),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        getImage(ImageSource.camera);
+                      },
+                      icon: const Icon(Icons.camera_alt, color: Colors.orange),
+                      label: const Text(
+                        'Take a Picture',
+                        style: TextStyle(fontSize: 12, color: Colors.orange),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(150, 50),
+                        // textStyle: const TextStyle(fontSize: 12, color: Colors.orange),
+                      ),
+                    ),
+                  ],
                 ),
-              // Display summary table after result image
-              // if (_resultImage != null)
+                const SizedBox(height: 30),
+                if (_image != null)
+                  ElevatedButton(
+                    onPressed: () {
+                      sendImageToAPI(_image!);
+                    },
+                    child: const Text(
+                      'Process Image',
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      // textStyle: const TextStyle(fontSize: 16, color: Colors.orange),
+                      backgroundColor: Colors.orange,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15.0, horizontal: 30.0),
+                    ),
+                  ),
+                const SizedBox(height: 20),
+                _resultImage == null
+                    ? Container()
+                    : Container(
+                        width: 350,
+                        height: 400,
+                        // child: Image.memory(
+                        child: Image.file(
+                          _resultImage!,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                // Display summary table after result image
+                // if (_resultImage != null)
                 Column(
-  children: [
-    const SizedBox(height: 20),
-    Container(
-      width: 350,
-      padding: const EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        color: Colors.orange[200],
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: const Text(
-        'Summary',
-        style: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
+                  children: [
+                    const SizedBox(height: 20),
+                    Container(
+                      width: 350,
+                      padding: const EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                        color: Colors.orange[200],
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: const Text(
+                        'Summary',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Container(
+                      width: 350,
+                      child: Table(
+                        border: TableBorder.all(),
+                        children: [
+                          TableRow(
+                            decoration: BoxDecoration(
+                              color: Colors.orange[100],
+                            ),
+                            children: [
+                              const TableCell(
+                                child: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text(
+                                    'Stage 1 Count',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              TableCell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    stage1Count.toString(),
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          TableRow(
+                            decoration: BoxDecoration(
+                              color: Colors.orange[100],
+                            ),
+                            children: [
+                              const TableCell(
+                                child: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text(
+                                    'Stage 2 Count',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              TableCell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    stage2Count.toString(),
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          TableRow(
+                            decoration: BoxDecoration(
+                              color: Colors.orange[100],
+                            ),
+                            children: [
+                              const TableCell(
+                                child: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text(
+                                    'Stage 3 Count',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              TableCell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    stage3Count.toString(),
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          TableRow(
+                            decoration: BoxDecoration(
+                              color: Colors.orange[100],
+                            ),
+                            children: [
+                              const TableCell(
+                                child: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text(
+                                    'Stage 4 Count',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              TableCell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    stage4Count.toString(),
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          TableRow(
+                            decoration: BoxDecoration(
+                              color: Colors.orange[100],
+                            ),
+                            children: [
+                              const TableCell(
+                                child: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text(
+                                    'Total Count',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              TableCell(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    totalCount.toString(),
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
       ),
-    ),
-    const SizedBox(height: 10),
-    Container(
-      width: 350,
-      child: Table(
-        border: TableBorder.all(),
-        children: [
-          TableRow(
-            decoration: BoxDecoration(
-              color: Colors.orange[100],
-            ),
-            children: [
-              const TableCell(
-                child: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text(
-                    'Stage 1 Count',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-              TableCell(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    stage1Count.toString(),
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          TableRow(
-            decoration: BoxDecoration(
-              color: Colors.orange[100],
-            ),
-            children: [
-              const TableCell(
-                child: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text(
-                    'Stage 2 Count',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-              TableCell(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    stage2Count.toString(),
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          TableRow(
-            decoration: BoxDecoration(
-              color: Colors.orange[100],
-            ),
-            children: [
-              const TableCell(
-                child: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text(
-                    'Stage 3 Count',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-              TableCell(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    stage3Count.toString(),
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          TableRow(
-            decoration: BoxDecoration(
-              color: Colors.orange[100],
-            ),
-            children: [
-              const TableCell(
-                child: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text(
-                    'Stage 4 Count',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-              TableCell(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    stage4Count.toString(),
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          TableRow(
-            decoration: BoxDecoration(
-              color: Colors.orange[100],
-            ),
-            children: [
-              const TableCell(
-                child: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text(
-                    'Total Count',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-              TableCell(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    totalCount.toString(),
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    ),
-  ],
-),
-
-            ],
-          ),
-        ),
-      ),
-    ),
-  );
-}
+    );
+  }
 }
