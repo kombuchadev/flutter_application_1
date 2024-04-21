@@ -58,6 +58,13 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+    aaptOptions {
+        noCompress 'tflite'
+        noCompress 'lite'
+    }
+    defaultConfig{
+        minSdkVersion 26
+    }
 }
 
 flutter {
