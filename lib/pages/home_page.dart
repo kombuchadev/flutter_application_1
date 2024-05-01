@@ -6,10 +6,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_application_1/pages/video_preview.dart';
 import 'package:flutter_application_1/pages/vision.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:dio/dio.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,15 +23,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   File? _image;
+  File? video;
   Uint8List? _resultImage;
+  bool showSummary = false;
+  bool isUploading = false;
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
-  //remove
   // File? _resultImage;
   final picker = ImagePicker();
   bool _loadingState = false;
@@ -39,8 +38,6 @@ class _HomePageState extends State<HomePage> {
   var stage4Count = 0;
   var totalCount = 0;
 
-  bool _showResultButton = false;
-
   Future getImage(ImageSource source) async {
     final pickedFile = await picker.pickImage(source: source);
 
@@ -48,6 +45,11 @@ class _HomePageState extends State<HomePage> {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
         _resultImage = null; // Reset result image if a new image is uploaded
+
+        setState(() {
+          showSummary = false;
+          video = null;
+        });
       } else {
         print('No image selected.');
       }
@@ -79,6 +81,7 @@ class _HomePageState extends State<HomePage> {
         totalCount = decodedResponse['total'];
         setState(() {
           _resultImage = imageBytes;
+          showSummary = true;
         });
         setState(() {
           _loadingState = false;
@@ -97,6 +100,55 @@ class _HomePageState extends State<HomePage> {
         print('Error: $e');
       }
     }
+  }
+
+  Future<File?> pickVideoFromGallery() async {
+    final XFile? pickedFile = await picker.pickVideo(
+      source: ImageSource.gallery,
+    );
+
+    if (pickedFile != null) {
+      setState(() {
+        showSummary = false;
+        _resultImage = null;
+        _image = null;
+      });
+      return File(pickedFile.path);
+    } else {
+      return null;
+    }
+  }
+
+  Future<void> uploadVideo(File videoFile) async {
+    var formData = FormData.fromMap({
+      'video': await MultipartFile.fromFile(videoFile.path),
+    });
+
+    var dio = Dio();
+    dio.options.baseUrl = 'http://192.168.160.24:8000/';
+    setState(() {
+      isUploading = true;
+      showSummary = false;
+    });
+    var response =
+        await dio.post('video/', data: formData, onSendProgress: (sent, total) {
+      // Show upload progress
+    });
+    if (response.statusCode == 200) {
+      var jsonResponse = response.data as Map<String, dynamic>;
+      stage1Count = jsonResponse['stage 1'];
+      stage2Count = jsonResponse['stage 2'];
+      stage3Count = jsonResponse['stage 3'];
+      stage4Count = jsonResponse['stage 4'];
+      totalCount = jsonResponse['total'];
+      setState(() {
+        showSummary = true;
+        isUploading = false;
+      });
+    } else {
+      print("error in response");
+    }
+    // Handle response
   }
 
   void signUserOut() {
@@ -145,11 +197,16 @@ class _HomePageState extends State<HomePage> {
                           fit: BoxFit.cover,
                         ),
                       ),
+                const SizedBox(
+                  height: 30,
+                ),
+                if (video != null)
+                  VideoPreview(
+                    videoFile: video!,
+                  ),
                 const SizedBox(height: 10),
-                Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  spacing: 5.0,
-                  runSpacing: 5.0,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     ElevatedButton.icon(
                       onPressed: () {
@@ -180,6 +237,12 @@ class _HomePageState extends State<HomePage> {
                         // textStyle: const TextStyle(fontSize: 12, color: Colors.orange),
                       ),
                     ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
                     ElevatedButton.icon(
                       onPressed: () {
                         Navigator.push(
@@ -189,6 +252,25 @@ class _HomePageState extends State<HomePage> {
                       },
                       icon: const Icon(Icons.videocam_rounded,
                           color: Colors.orange),
+                      label: const Text(
+                        'Live Inference',
+                        style: TextStyle(fontSize: 12, color: Colors.orange),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(150, 50),
+                        // textStyle: const TextStyle(fontSize: 12, color: Colors.orange),
+                      ),
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: () async {
+                        final videoFile = await pickVideoFromGallery();
+                        if (videoFile != null) {
+                          setState(() {
+                            video = videoFile;
+                          });
+                        }
+                      },
+                      icon: const Icon(Icons.play_circle, color: Colors.orange),
                       label: const Text(
                         'Video Inference',
                         style: TextStyle(fontSize: 12, color: Colors.orange),
@@ -208,17 +290,43 @@ class _HomePageState extends State<HomePage> {
                         : () {
                             sendImageToAPI(_image!);
                           },
-                    child: const Text(
-                      'Process Image',
-                      style: TextStyle(fontSize: 16, color: Colors.white),
-                    ),
                     style: ElevatedButton.styleFrom(
                       // textStyle: const TextStyle(fontSize: 16, color: Colors.orange),
                       backgroundColor: Colors.orange,
                       padding: const EdgeInsets.symmetric(
                           vertical: 15.0, horizontal: 30.0),
                     ),
+                    child: const Text(
+                      'Process Image',
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
                   ),
+                if (video != null)
+                  ElevatedButton(
+                    onPressed: () {
+                      uploadVideo(video!);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      // textStyle: const TextStyle(fontSize: 16, color: Colors.orange),
+                      backgroundColor: Colors.orange,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15.0, horizontal: 30.0),
+                    ),
+                    child: const Text(
+                      'Process Video',
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                  ),
+                if (isUploading == true)
+                  const Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      child: Stack(children: [
+                        Center(child:Text(
+                          "Video Uploading...",
+                          style: TextStyle(fontSize: 16, color: Colors.white),
+                        )),
+                        Center(child: CircularProgressIndicator())
+                      ])),
                 const SizedBox(height: 20),
                 _resultImage == null
                     ? Container()
@@ -232,7 +340,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                 // Display summary table after result image
-                if (_resultImage != null)
+                if (showSummary != false)
                   Column(
                     children: [
                       const SizedBox(height: 20),

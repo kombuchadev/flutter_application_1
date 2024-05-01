@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_application_1/pages/home_page.dart';
+import 'package:flutter_application_1/pages/thermal_imaging.dart';
 
 class SelectModelPage extends StatelessWidget {
   const SelectModelPage({super.key});
@@ -69,7 +70,7 @@ class SelectModelPage extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const HomePage()),
+                      MaterialPageRoute(builder: (context) => const PostHarvest()),
                     );
                   },
                   child: Card(

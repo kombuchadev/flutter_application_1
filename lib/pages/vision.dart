@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import 'dart:async';
 import 'package:flutter_vision/flutter_vision.dart';
-import 'package:image_picker/image_picker.dart';
 
 enum Options { none, imagev5, imagev8, imagev8seg, frame, tesseract, vision }
 
